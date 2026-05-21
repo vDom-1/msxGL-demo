@@ -3,11 +3,26 @@
 #include "input.h"
 #include "bios.h"
 
-#define MAZE_WIDTH 32
-#define MAZE_HEIGHT 26
-#define BLOCK_SIZE 8
+//=============================================================================
+// DEFINES
+//=============================================================================
+#define MAZE_WIDTH         32
+#define MAZE_HEIGHT        26
+#define BLOCK_SIZE          8
+#define SPRITE_SIZE        16
+#define SPRITE_HITBOX       8
+#define SPRITE_HIT_OFFSET   4
+#define SCREEN_WIDTH      256
+#define SCREEN_HEIGHT     212
 
-const u8 g_Maze[MAZE_HEIGHT][MAZE_WIDTH] = {
+enum
+{
+    TILE_EMPTY  = 0,
+    TILE_WALL   = 1,
+    TILE_FINISH = 2,
+};
+
+static const u8 g_Maze[MAZE_HEIGHT][MAZE_WIDTH] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1},
     {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1},
@@ -36,12 +51,12 @@ const u8 g_Maze[MAZE_HEIGHT][MAZE_WIDTH] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 };
 
-// Posição inicial do jogador
-u8 g_PlayerX = 4;
-u8 g_PlayerY = 4;
+// Player initial position
+static u8 g_PlayerX = 4;
+static u8 g_PlayerY = 4;
 
 // Sprite pattern (Pinguim 16x16 - Base branca)
-const u8 g_SpritePenguin[] = {
+static const u8 g_SpritePenguin[] = {
     // Top-Left
     0x00, 0x00, 0x00, 0x03, 0x06, 0x06, 0x07, 0x03,
     // Bottom-Left
@@ -53,7 +68,7 @@ const u8 g_SpritePenguin[] = {
 };
 
 // Sprite pattern (Pinguim 16x16 - Camada de cor / OR)
-const u8 g_SpritePenguinOR[] = {
+static const u8 g_SpritePenguinOR[] = {
     // Top-Left
     0x17, 0x3F, 0x1F, 0x3C, 0x39, 0x39, 0x38, 0x3C,
     // Bottom-Left
@@ -64,34 +79,49 @@ const u8 g_SpritePenguinOR[] = {
     0x08, 0x06, 0x05, 0x05, 0xC7, 0xFC, 0xF0, 0xF8
 };
 
-bool CheckWall(u8 x, u8 y) {
-    u8 col = x / 8;
-    u8 row = y / 8;
-    if (col >= MAZE_WIDTH || row >= MAZE_HEIGHT) return TRUE;
-    return g_Maze[row][col] == 1;
+static bool CheckWall(u8 x, u8 y)
+{
+    u8 col = x / BLOCK_SIZE;
+    u8 row = y / BLOCK_SIZE;
+
+    if (col >= MAZE_WIDTH || row >= MAZE_HEIGHT)
+        return TRUE;
+
+    return g_Maze[row][col] == TILE_WALL;
 }
 
-bool CheckTarget(u8 x, u8 y) {
-    u8 col = x / 8;
-    u8 row = y / 8;
-    if (col >= MAZE_WIDTH || row >= MAZE_HEIGHT) return FALSE;
-    return g_Maze[row][col] == 2;
+static bool CheckTarget(u8 x, u8 y)
+{
+    u8 col = x / BLOCK_SIZE;
+    u8 row = y / BLOCK_SIZE;
+
+    if (col >= MAZE_WIDTH || row >= MAZE_HEIGHT)
+        return FALSE;
+
+    return g_Maze[row][col] == TILE_FINISH;
 }
 
-bool IsCollision(u8 x, u8 y) {
-    // Check screen boundaries
-    if (x > 256 - 16 || y > 212 - 16) return TRUE;
-    
-    // Use an 8x8 hitbox centered in the 16x16 penguin (offsets +4)
-    if (CheckWall(x + 4, y + 4)) return TRUE;
-    if (CheckWall(x + 11, y + 4)) return TRUE;
-    if (CheckWall(x + 4, y + 11)) return TRUE;
-    if (CheckWall(x + 11, y + 11)) return TRUE;
-    
+static bool IsCollision(u8 x, u8 y)
+{
+    if (x > SCREEN_WIDTH - SPRITE_SIZE || y > SCREEN_HEIGHT - SPRITE_SIZE)
+        return TRUE;
+
+    if (CheckWall(x + SPRITE_HIT_OFFSET, y + SPRITE_HIT_OFFSET))
+        return TRUE;
+
+    if (CheckWall(x + SPRITE_SIZE - SPRITE_HIT_OFFSET - 1, y + SPRITE_HIT_OFFSET))
+        return TRUE;
+
+    if (CheckWall(x + SPRITE_HIT_OFFSET, y + SPRITE_SIZE - SPRITE_HIT_OFFSET - 1))
+        return TRUE;
+
+    if (CheckWall(x + SPRITE_SIZE - SPRITE_HIT_OFFSET - 1, y + SPRITE_SIZE - SPRITE_HIT_OFFSET - 1))
+        return TRUE;
+
     return FALSE;
 }
 
-const u8 g_TileWall[32] = {
+static const u8 g_TileWall[32] = {
     0x66, 0x66, 0x66, 0x66, // Dark Red line
     0x68, 0x88, 0x86, 0x88, // Med Red + Dark Red lines
     0x68, 0x88, 0x86, 0x88, 
@@ -102,7 +132,7 @@ const u8 g_TileWall[32] = {
     0x68, 0x88, 0x86, 0x88
 };
 
-const u8 g_TileFinish[32] = {
+static const u8 g_TileFinish[32] = {
     0xFF, 0xFF, 0x11, 0x11,
     0xFF, 0xFF, 0x11, 0x11,
     0xFF, 0xFF, 0x11, 0x11,
@@ -113,17 +143,21 @@ const u8 g_TileFinish[32] = {
     0x11, 0x11, 0xFF, 0xFF
 };
 
-void DrawMaze() {
-    // 1. Draw tile patterns to offscreen VRAM (Y=216)
+static void DrawMaze(void)
+{
     VDP_CommandHMMC(g_TileWall, 0, 216, 8, 8);
     VDP_CommandHMMC(g_TileFinish, 8, 216, 8, 8);
 
-    // 2. Loop through maze and stamp tiles using HMMM
-    for (u8 y = 0; y < MAZE_HEIGHT; y++) {
-        for (u8 x = 0; x < MAZE_WIDTH; x++) {
-            if (g_Maze[y][x] == 1) {
+    for (u8 y = 0; y < MAZE_HEIGHT; y++)
+    {
+        for (u8 x = 0; x < MAZE_WIDTH; x++)
+        {
+            if (g_Maze[y][x] == TILE_WALL)
+            {
                 VDP_CommandHMMM(0, 216, x * BLOCK_SIZE, y * BLOCK_SIZE, 8, 8);
-            } else if (g_Maze[y][x] == 2) {
+            }
+            else if (g_Maze[y][x] == TILE_FINISH)
+            {
                 VDP_CommandHMMM(8, 216, x * BLOCK_SIZE, y * BLOCK_SIZE, 8, 8);
             }
         }
@@ -159,6 +193,7 @@ void main(void)
 
     // Draw the maze blocks
     DrawMaze();
+    VDP_CommandWait();
 
     BIOS_SetKeyClick(FALSE);
 
