@@ -1,0 +1,6 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.autocomplete": "default",
+    "C_Cpp.default.compilerPath": "c:\\MSX\\MSXgl-1.4.1\\tools\\sdcc\\bin\\sdcc.exe",
+}

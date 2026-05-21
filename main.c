@@ -130,6 +130,7 @@ void DrawMaze() {
     }
 }
 
+
 // Função principal
 void main(void)
 {

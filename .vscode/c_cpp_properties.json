@@ -1,0 +1,46 @@
+{
+    "configurations": [
+        {
+            "name": "MSXgl",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/**",
+                "c:/MSX/MSXgl-1.4.1/engine/src",
+                "c:/MSX/MSXgl-1.4.1/engine/src/**",
+                "c:/MSX/MSXgl-1.4.1/tools/sdcc/include",
+                "c:/MSX/MSXgl-1.4.1/tools/sdcc/include/**"
+            ],
+            "defines": [
+                "__sdcc",
+                "SDCC",
+                "__z80",
+                "__SDCC_VERSION_MAJOR=4",
+                "__SDCC_VERSION_MINOR=2",
+                "__SDCC_VERSION_PATCH=0",
+                "MSX_VERSION=2",
+                "TARGET=TARGET_ROM_32K",
+                "__sfr=volatile unsigned char",
+                "__at(x)=",
+                "__sdcccall(x)=",
+                "__z88dk_fastcall=",
+                "__z88dk_callee=",
+                "__naked=",
+                "__preserves_regs(...)=",
+                "__asm=/*",
+                "__endasm=*/"
+            ],
+            "compilerPath": "c:\\MSX\\MSXgl-1.4.1\\tools\\sdcc\\bin\\sdcc.exe",
+            "cStandard": "c11",
+            "intelliSenseMode": "windows-gcc-x86",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",                    
+                    "c:/MSX/MSXgl-1.4.1/engine/src",                    
+                    "c:/MSX/MSXgl-1.4.1/tools/sdcc/include"                    
+                ],
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}
