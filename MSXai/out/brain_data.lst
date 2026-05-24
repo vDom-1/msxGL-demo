@@ -1,0 +1,16 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                          Page 1
+Hexadecimal [32-Bits]
+
+
+
+                                      1 ; Dummy brain data for linking
+                                      2 .globl _brain_index_comp
+                                      3 .globl _brain_data_comp
+                                      4 
+                                      5 .area _DATA
+                                      6 
+    00000000                          7 _brain_index_comp::
+    00000000 00                       8     .byte 0x00
+                                      9 
+    00000001                         10 _brain_data_comp::
+    00000001 00                      11     .byte 0x00

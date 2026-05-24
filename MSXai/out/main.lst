@@ -1,0 +1,939 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 4.2.0 #13081 (MINGW64)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module main
+                                      6 	.optsdcc -mz80
+                                      7 	
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _main
+                                     12 	.globl _UpdateKey
+                                     13 	.globl _WeightedPick
+                                     14 	.globl _FindStateIndex
+                                     15 	.globl _Pletter_UnpackToVRAM
+                                     16 	.globl _Math_GetRandom16
+                                     17 	.globl _Print_SetColor
+                                     18 	.globl _Print_DrawText
+                                     19 	.globl _VDP_ReadVRAM_128K
+                                     20 	.globl _VDP_SetMode
+                                     21 	.globl _VDP_ClearVRAM
+                                     22 	.globl _g_CurrentKey
+                                     23 	.globl _g_SLTSL
+                                     24 	.globl _g_GRPACY
+                                     25 	.globl _g_GRPACX
+                                     26 	.globl _g_LOGOPR
+                                     27 	.globl _g_CMASK
+                                     28 	.globl _g_CLOC
+                                     29 	.globl _g_FNKSTR
+                                     30 	.globl _g_ATRBYT
+                                     31 	.globl _g_BDRCLR
+                                     32 	.globl _g_BAKCLR
+                                     33 	.globl _g_FORCLR
+                                     34 	.globl _g_CSRX
+                                     35 	.globl _g_CSRY
+                                     36 	.globl _g_CLIKSW
+                                     37 	.globl _g_MLTPAT
+                                     38 	.globl _g_MLTATR
+                                     39 	.globl _g_MLTCGP
+                                     40 	.globl _g_MLTCOL
+                                     41 	.globl _g_MLTNAM
+                                     42 	.globl _g_GRPPAT
+                                     43 	.globl _g_GRPATR
+                                     44 	.globl _g_GRPCGP
+                                     45 	.globl _g_GRPCOL
+                                     46 	.globl _g_GRPNAM
+                                     47 	.globl _g_T32PAT
+                                     48 	.globl _g_T32ATR
+                                     49 	.globl _g_T32CGP
+                                     50 	.globl _g_T32COL
+                                     51 	.globl _g_T32NAM
+                                     52 	.globl _g_TXTPAT
+                                     53 	.globl _g_TXTATR
+                                     54 	.globl _g_TXTCGP
+                                     55 	.globl _g_TXTCOL
+                                     56 	.globl _g_TXTNAM
+                                     57 	.globl _g_CLMLST
+                                     58 	.globl _g_CRTCNT
+                                     59 	.globl _g_LINLEN
+                                     60 	.globl _g_LINL32
+                                     61 	.globl _g_LINL40
+                                     62 	.globl _Alphabet
+                                     63 	.globl _g_BDOS
+                                     64 	.globl _g_MASTER
+                                     65 	.globl _g_RAMAD3
+                                     66 	.globl _g_RAMAD2
+                                     67 	.globl _g_RAMAD1
+                                     68 	.globl _g_RAMAD0
+                                     69 	.globl _g_BREAKV
+                                     70 	.globl _g_DISKVE
+                                     71 	.globl _g_KANJTABLE
+                                     72 	.globl _g_STRSRC
+                                     73 	.globl _g_SUBRID
+                                     74 	.globl _g_CHAR_16
+                                     75 	.globl _g_MSXMID
+                                     76 	.globl _g_MSXVER
+                                     77 	.globl _g_ROMVersion
+                                     78 	.globl _g_BASRVN
+                                     79 	.globl _g_VDP_DW
+                                     80 	.globl _g_VDP_DR
+                                     81 	.globl _g_CGTABL
+                                     82 	.globl _g_SVFFFD
+                                     83 	.globl _g_RG27SAV
+                                     84 	.globl _g_RG26SAV
+                                     85 	.globl _g_RG25SAV
+                                     86 	.globl _g_SVFFF8
+                                     87 	.globl _g_MINROM
+                                     88 	.globl _g_RG23SAV
+                                     89 	.globl _g_RG22SAV
+                                     90 	.globl _g_RG21SAV
+                                     91 	.globl _g_RG20SAV
+                                     92 	.globl _g_RG19SAV
+                                     93 	.globl _g_RG18SAV
+                                     94 	.globl _g_RG17SAV
+                                     95 	.globl _g_RG16SAV
+                                     96 	.globl _g_RG15SAV
+                                     97 	.globl _g_RG14SAV
+                                     98 	.globl _g_RG13SAV
+                                     99 	.globl _g_RG12SAV
+                                    100 	.globl _g_RG11SAV
+                                    101 	.globl _g_RG10SAV
+                                    102 	.globl _g_RG09SAV
+                                    103 	.globl _g_RG08SAV
+                                    104 	.globl _g_PROCNM
+                                    105 	.globl _g_SLTWRK
+                                    106 	.globl _g_SLTATR
+                                    107 	.globl _g_SLTTBL
+                                    108 	.globl _g_EXPTBL
+                                    109 	.globl _g_MNROM
+                                    110 	.globl _g_DRWANG
+                                    111 	.globl _g_DRWSCL
+                                    112 	.globl _g_DRWFLG
+                                    113 	.globl _g_GYPOS
+                                    114 	.globl _g_GXPOS
+                                    115 	.globl _g_BRDATR
+                                    116 	.globl _g_CASPRV
+                                    117 	.globl _g_OLDSCR
+                                    118 	.globl _g_SCRMOD
+                                    119 	.globl _g_FLBMEM
+                                    120 	.globl _g_KANAMD
+                                    121 	.globl _g_KANAST
+                                    122 	.globl _g_CAPST
+                                    123 	.globl _g_CSTYLE
+                                    124 	.globl _g_CSRSW
+                                    125 	.globl _g_INSFLG
+                                    126 	.globl _g_ESCCNT
+                                    127 	.globl _g_GRPHED
+                                    128 	.globl _g_WINWID
+                                    129 	.globl _g_LOWLIM
+                                    130 	.globl _g_INTCNT
+                                    131 	.globl _g_INTVAL
+                                    132 	.globl _g_JIFFY
+                                    133 	.globl _g_PADX
+                                    134 	.globl _g_PADY
+                                    135 	.globl _g_INTFLG
+                                    136 	.globl _g_RTYCNT
+                                    137 	.globl _g_TRPTBL
+                                    138 	.globl _g_HIMEM
+                                    139 	.globl _g_BOTTOM
+                                    140 	.globl _g_PATWRK
+                                    141 	.globl _g_LINWRK
+                                    142 	.globl _g_KEYBUF
+                                    143 	.globl _g_NEWKEY
+                                    144 	.globl _g_OLDKEY
+                                    145 	.globl _g_CLIKFL
+                                    146 	.globl _g_ONGSBF
+                                    147 	.globl _g_FNKFLG
+                                    148 	.globl _g_FNKSWI
+                                    149 	.globl _g_CODSAV
+                                    150 	.globl _g_FSTPOS
+                                    151 	.globl _g_LINTTB
+                                    152 	.globl _g_BASROM
+                                    153 	.globl _g_ENSTOP
+                                    154 	.globl _g_VCBC
+                                    155 	.globl _g_VCBB
+                                    156 	.globl _g_VCBA
+                                    157 	.globl _g_PLYCNT
+                                    158 	.globl _g_MUSICF
+                                    159 	.globl _g_QUEUEN
+                                    160 	.globl _g_MCLPTR
+                                    161 	.globl _g_MCLLEN
+                                    162 	.globl _g_SAVVOL
+                                    163 	.globl _g_VOICEN
+                                    164 	.globl _g_SAVSP
+                                    165 	.globl _g_PRSCNT
+                                    166 	.globl _g_LSTMOD
+                                    167 	.globl _g_LSTCOM
+                                    168 	.globl _g_COMMSK
+                                    169 	.globl _g_ESTBLS
+                                    170 	.globl _g_FLAGS
+                                    171 	.globl _g_ERRORS
+                                    172 	.globl _g_DATCNT
+                                    173 	.globl _g_DEVNUM
+                                    174 	.globl _g_OLDINT
+                                    175 	.globl _g_OLDSTT
+                                    176 	.globl _g_MEXBIh
+                                    177 	.globl _g_RSIQLN
+                                    178 	.globl _g_RSFCB
+                                    179 	.globl _g_TOCNT
+                                    180 	.globl _g_RSTMP
+                                    181 	.globl _g_YSAVE
+                                    182 	.globl _g_XSAVE
+                                    183 	.globl _g_NORUSE
+                                    184 	.globl _g_MODE
+                                    185 	.globl _g_ROMA
+                                    186 	.globl _g_CHRCNT
+                                    187 	.globl _g_EXBRSA
+                                    188 	.globl _g_AVCSAV
+                                    189 	.globl _g_ACPAGE
+                                    190 	.globl _g_DPPAGE
+                                    191 	.globl _g_RS2IQ
+                                    192 	.globl _g_VOICCQ
+                                    193 	.globl _g_VOICBQ
+                                    194 	.globl _g_VOICAQ
+                                    195 	.globl _g_QUEBAK
+                                    196 	.globl _g_QUETAB
+                                    197 	.globl _g_ASPCT2
+                                    198 	.globl _g_ASPCT1
+                                    199 	.globl _g_HEADER
+                                    200 	.globl _g_HIGH
+                                    201 	.globl _g_LOW
+                                    202 	.globl _g_CS240
+                                    203 	.globl _g_CS120
+                                    204 	.globl _g_GETPNT
+                                    205 	.globl _g_PUTPNT
+                                    206 	.globl _g_REPCNT
+                                    207 	.globl _g_SCNCNT
+                                    208 	.globl _g_FRCNEW
+                                    209 	.globl _g_QUEUES
+                                    210 	.globl _g_MINUPD
+                                    211 	.globl _g_MAXUPD
+                                    212 	.globl _g_TRGFLG
+                                    213 	.globl _g_STATFL
+                                    214 	.globl _g_RG7SAV
+                                    215 	.globl _g_RG6SAV
+                                    216 	.globl _g_RG5SAV
+                                    217 	.globl _g_RG4SAV
+                                    218 	.globl _g_RG3SAV
+                                    219 	.globl _g_RG2SAV
+                                    220 	.globl _g_RG1SAV
+                                    221 	.globl _g_RG0SAV
+                                    222 	.globl _g_CNSDFG
+                                    223 	.globl _g_USRTAB
+                                    224 	.globl _g_CLPRIM
+                                    225 	.globl _g_WRPRIM
+                                    226 	.globl _g_RDPRIM
+                                    227 ;--------------------------------------------------------
+                                    228 ; special function registers
+                                    229 ;--------------------------------------------------------
+                         000000A8   230 _g_PortPrimarySlot	=	0x00a8
+                         000000A9   231 _g_PortReadKeyboard	=	0x00a9
+                         000000AA   232 _g_PortAccessKeyboard	=	0x00aa
+                         000000AB   233 _g_PortControl	=	0x00ab
+                         00000098   234 _g_VDP_DataPort	=	0x0098
+                         00000099   235 _g_VDP_RegPort	=	0x0099
+                         00000099   236 _g_VDP_AddrPort	=	0x0099
+                         00000099   237 _g_VDP_StatPort	=	0x0099
+                         0000009A   238 _g_VDP_PalPort	=	0x009a
+                         0000009B   239 _g_VDP_IRegPort	=	0x009b
+                         000000A0   240 _g_PSG_RegPort	=	0x00a0
+                         000000A1   241 _g_PSG_DataPort	=	0x00a1
+                         000000A2   242 _g_PSG_StatPort	=	0x00a2
+                         00000010   243 _g_PSG_Ext_RegPort	=	0x0010
+                         00000011   244 _g_PSG_Ext_DataPort	=	0x0011
+                         00000012   245 _g_PSG_Ext_StatPort	=	0x0012
+                         0000007C   246 _g_MSXMusic_IndexPort	=	0x007c
+                         0000007D   247 _g_MSXMusic_DataPort	=	0x007d
+                         000000C0   248 _g_MSXAudio_IndexPort	=	0x00c0
+                         000000C1   249 _g_MSXAudio_DataPort	=	0x00c1
+                         000000C2   250 _g_MSXAudio_IndexPort2	=	0x00c2
+                         000000C3   251 _g_MSXAudio_DataPort2	=	0x00c3
+                         000000B4   252 _g_RTC_AddrPort	=	0x00b4
+                         000000B5   253 _g_RTC_DataPort	=	0x00b5
+                                    254 ;--------------------------------------------------------
+                                    255 ; ram data
+                                    256 ;--------------------------------------------------------
+                                    257 	.area _DATA
+                         0000F3AE   258 _g_LINL40	=	0xf3ae
+                         0000F3AF   259 _g_LINL32	=	0xf3af
+                         0000F3B0   260 _g_LINLEN	=	0xf3b0
+                         0000F3B1   261 _g_CRTCNT	=	0xf3b1
+                         0000F3B2   262 _g_CLMLST	=	0xf3b2
+                         0000F3B3   263 _g_TXTNAM	=	0xf3b3
+                         0000F3B5   264 _g_TXTCOL	=	0xf3b5
+                         0000F3B7   265 _g_TXTCGP	=	0xf3b7
+                         0000F3B9   266 _g_TXTATR	=	0xf3b9
+                         0000F3BB   267 _g_TXTPAT	=	0xf3bb
+                         0000F3BD   268 _g_T32NAM	=	0xf3bd
+                         0000F3BF   269 _g_T32COL	=	0xf3bf
+                         0000F3C1   270 _g_T32CGP	=	0xf3c1
+                         0000F3C3   271 _g_T32ATR	=	0xf3c3
+                         0000F3C5   272 _g_T32PAT	=	0xf3c5
+                         0000F3C7   273 _g_GRPNAM	=	0xf3c7
+                         0000F3C9   274 _g_GRPCOL	=	0xf3c9
+                         0000F3CB   275 _g_GRPCGP	=	0xf3cb
+                         0000F3CD   276 _g_GRPATR	=	0xf3cd
+                         0000F3CF   277 _g_GRPPAT	=	0xf3cf
+                         0000F3D1   278 _g_MLTNAM	=	0xf3d1
+                         0000F3D3   279 _g_MLTCOL	=	0xf3d3
+                         0000F3D5   280 _g_MLTCGP	=	0xf3d5
+                         0000F3D7   281 _g_MLTATR	=	0xf3d7
+                         0000F3D9   282 _g_MLTPAT	=	0xf3d9
+                         0000F3DB   283 _g_CLIKSW	=	0xf3db
+                         0000F3DC   284 _g_CSRY	=	0xf3dc
+                         0000F3DD   285 _g_CSRX	=	0xf3dd
+                         0000F3E9   286 _g_FORCLR	=	0xf3e9
+                         0000F3EA   287 _g_BAKCLR	=	0xf3ea
+                         0000F3EB   288 _g_BDRCLR	=	0xf3eb
+                         0000F3F2   289 _g_ATRBYT	=	0xf3f2
+                         0000F87F   290 _g_FNKSTR	=	0xf87f
+                         0000F92A   291 _g_CLOC	=	0xf92a
+                         0000F92C   292 _g_CMASK	=	0xf92c
+                         0000FB02   293 _g_LOGOPR	=	0xfb02
+                         0000FCB7   294 _g_GRPACX	=	0xfcb7
+                         0000FCB9   295 _g_GRPACY	=	0xfcb9
+                         0000FFFF   296 _g_SLTSL	=	0xffff
+    00000000                        297 _main_block_196608_909:
+    00000000                        298 	.ds 8
+                                    299 ;--------------------------------------------------------
+                                    300 ; ram data
+                                    301 ;--------------------------------------------------------
+                                    302 	.area _INITIALIZED
+    00000000                        303 _g_CurrentKey::
+    00000000                        304 	.ds 4
+                                    305 ;--------------------------------------------------------
+                                    306 ; absolute external ram data
+                                    307 ;--------------------------------------------------------
+                                    308 	.area _DABS (ABS)
+                                    309 ;--------------------------------------------------------
+                                    310 ; global & static initialisations
+                                    311 ;--------------------------------------------------------
+                                    312 	.area _HOME
+                                    313 	.area _GSINIT
+                                    314 	.area _GSFINAL
+                                    315 	.area _GSINIT
+                                    316 ;--------------------------------------------------------
+                                    317 ; Home
+                                    318 ;--------------------------------------------------------
+                                    319 	.area _HOME
+                                    320 	.area _HOME
+                                    321 ;--------------------------------------------------------
+                                    322 ; code
+                                    323 ;--------------------------------------------------------
+                                    324 	.area _CODE
+                                    325 ;./main.c:28: u16 FindStateIndex(u32 target_key) {
+                                    326 ;	---------------------------------
+                                    327 ; Function FindStateIndex
+                                    328 ; ---------------------------------
+    00000000                        329 _FindStateIndex::
+    00000000 DD E5            [15]  330 	push	ix
+    00000002 DD 21 00 00      [14]  331 	ld	ix,#0
+    00000006 DD 39            [15]  332 	add	ix,sp
+    00000008 FD 21 F5 FF      [14]  333 	ld	iy, #-11
+    0000000C FD 39            [15]  334 	add	iy, sp
+    0000000E FD F9            [10]  335 	ld	sp, iy
+    00000010 DD 73 FC         [19]  336 	ld	-4 (ix), e
+    00000013 DD 72 FD         [19]  337 	ld	-3 (ix), d
+    00000016 DD 75 FE         [19]  338 	ld	-2 (ix), l
+    00000019 DD 74 FF         [19]  339 	ld	-1 (ix), h
+                                    340 ;./main.c:29: i16 low = 0;
+    0000001C AF               [ 4]  341 	xor	a, a
+    0000001D DD 77 F8         [19]  342 	ld	-8 (ix), a
+    00000020 DD 77 F9         [19]  343 	ld	-7 (ix), a
+                                    344 ;./main.c:30: i16 high = STATE_COUNT - 1;
+    00000023 DD 36 FA FB      [19]  345 	ld	-6 (ix), #0xfb
+    00000027 DD 36 FB 13      [19]  346 	ld	-5 (ix), #0x13
+                                    347 ;./main.c:33: while (low <= high) {
+    0000002B                        348 00106$:
+    0000002B DD 7E FA         [19]  349 	ld	a, -6 (ix)
+    0000002E DD 96 F8         [19]  350 	sub	a, -8 (ix)
+    00000031 DD 7E FB         [19]  351 	ld	a, -5 (ix)
+    00000034 DD 9E F9         [19]  352 	sbc	a, -7 (ix)
+    00000037 E2r3Cr00         [10]  353 	jp	PO, 00137$
+    0000003A EE 80            [ 7]  354 	xor	a, #0x80
+    0000003C                        355 00137$:
+    0000003C FArDEr00         [10]  356 	jp	M, 00108$
+                                    357 ;./main.c:34: i16 mid = low + (high - low) / 2;
+    0000003F DD 7E FA         [19]  358 	ld	a, -6 (ix)
+    00000042 DD 96 F8         [19]  359 	sub	a, -8 (ix)
+    00000045 5F               [ 4]  360 	ld	e, a
+    00000046 DD 7E FB         [19]  361 	ld	a, -5 (ix)
+    00000049 DD 9E F9         [19]  362 	sbc	a, -7 (ix)
+    0000004C 57               [ 4]  363 	ld	d, a
+    0000004D 4B               [ 4]  364 	ld	c, e
+    0000004E 42               [ 4]  365 	ld	b, d
+    0000004F CB 7A            [ 8]  366 	bit	7, d
+    00000051 28 03            [12]  367 	jr	Z, 00111$
+    00000053 4B               [ 4]  368 	ld	c, e
+    00000054 42               [ 4]  369 	ld	b, d
+    00000055 03               [ 6]  370 	inc	bc
+    00000056                        371 00111$:
+    00000056 CB 28            [ 8]  372 	sra	b
+    00000058 CB 19            [ 8]  373 	rr	c
+    0000005A DD 6E F8         [19]  374 	ld	l, -8 (ix)
+                                    375 ;	spillPairReg hl
+                                    376 ;	spillPairReg hl
+    0000005D DD 66 F9         [19]  377 	ld	h, -7 (ix)
+                                    378 ;	spillPairReg hl
+                                    379 ;	spillPairReg hl
+    00000060 09               [11]  380 	add	hl, bc
+    00000061 E5               [11]  381 	push	hl
+    00000062 FD E1            [14]  382 	pop	iy
+                                    383 ;./main.c:39: VDP_ReadVRAM((u16)ADDR_INDEX + (mid * 3), 0, key_bytes, 3);
+    00000064 FD E5            [15]  384 	push	iy
+    00000066 C1               [10]  385 	pop	bc
+    00000067 69               [ 4]  386 	ld	l, c
+    00000068 60               [ 4]  387 	ld	h, b
+    00000069 29               [11]  388 	add	hl, hl
+    0000006A 09               [11]  389 	add	hl, bc
+    0000006B 5D               [ 4]  390 	ld	e, l
+    0000006C 7C               [ 4]  391 	ld	a, h
+    0000006D C6 10            [ 7]  392 	add	a, #0x10
+    0000006F 57               [ 4]  393 	ld	d, a
+    00000070 C5               [11]  394 	push	bc
+    00000071 FD E5            [15]  395 	push	iy
+    00000073 21 03 00         [10]  396 	ld	hl, #0x0003
+    00000076 E5               [11]  397 	push	hl
+    00000077 21 06 00         [10]  398 	ld	hl, #6
+    0000007A 39               [11]  399 	add	hl, sp
+    0000007B E5               [11]  400 	push	hl
+    0000007C AF               [ 4]  401 	xor	a, a
+    0000007D F5               [11]  402 	push	af
+    0000007E 33               [ 6]  403 	inc	sp
+    0000007F EB               [ 4]  404 	ex	de, hl
+    00000080 CDr00r00         [17]  405 	call	_VDP_ReadVRAM_128K
+    00000083 FD E1            [14]  406 	pop	iy
+    00000085 C1               [10]  407 	pop	bc
+                                    408 ;./main.c:40: mid_key = (key_bytes[0] << 16) | (key_bytes[1] << 8) | key_bytes[2];
+    00000086 DD 56 F6         [19]  409 	ld	d, -10 (ix)
+    00000089 1E 00            [ 7]  410 	ld	e, #0x00
+    0000008B DD 7E F7         [19]  411 	ld	a, -9 (ix)
+    0000008E 2E 00            [ 7]  412 	ld	l, #0x00
+                                    413 ;	spillPairReg hl
+                                    414 ;	spillPairReg hl
+    00000090 B3               [ 4]  415 	or	a, e
+    00000091 5F               [ 4]  416 	ld	e, a
+    00000092 7D               [ 4]  417 	ld	a, l
+    00000093 B2               [ 4]  418 	or	a, d
+    00000094 57               [ 4]  419 	ld	d, a
+    00000095 07               [ 4]  420 	rlca
+    00000096 ED 62            [15]  421 	sbc	hl, hl
+                                    422 ;./main.c:41: mid_key &= KEY_MASK;
+    00000098 26 00            [ 7]  423 	ld	h, #0x00
+                                    424 ;	spillPairReg hl
+                                    425 ;	spillPairReg hl
+                                    426 ;./main.c:43: if (mid_key == target_key) return (u16)mid;
+    0000009A DD 7E FC         [19]  427 	ld	a, -4 (ix)
+    0000009D 93               [ 4]  428 	sub	a, e
+    0000009E 20 18            [12]  429 	jr	NZ, 00102$
+    000000A0 DD 7E FD         [19]  430 	ld	a, -3 (ix)
+    000000A3 92               [ 4]  431 	sub	a, d
+    000000A4 20 12            [12]  432 	jr	NZ, 00102$
+    000000A6 7D               [ 4]  433 	ld	a, l
+    000000A7 DD 96 FE         [19]  434 	sub	a, -2 (ix)
+    000000AA 20 0C            [12]  435 	jr	NZ, 00102$
+    000000AC 7C               [ 4]  436 	ld	a, h
+    000000AD DD 96 FF         [19]  437 	sub	a, -1 (ix)
+    000000B0 20 06            [12]  438 	jr	NZ, 00102$
+    000000B2 FD E5            [15]  439 	push	iy
+    000000B4 D1               [10]  440 	pop	de
+    000000B5 C3rE1r00         [10]  441 	jp	00109$
+    000000B8                        442 00102$:
+                                    443 ;./main.c:44: if (mid_key < target_key)  low = mid + 1;
+    000000B8 7B               [ 4]  444 	ld	a, e
+    000000B9 DD 96 FC         [19]  445 	sub	a, -4 (ix)
+    000000BC 7A               [ 4]  446 	ld	a, d
+    000000BD DD 9E FD         [19]  447 	sbc	a, -3 (ix)
+    000000C0 7D               [ 4]  448 	ld	a, l
+    000000C1 DD 9E FE         [19]  449 	sbc	a, -2 (ix)
+    000000C4 7C               [ 4]  450 	ld	a, h
+    000000C5 DD 9E FF         [19]  451 	sbc	a, -1 (ix)
+    000000C8 30 0A            [12]  452 	jr	NC, 00104$
+    000000CA 03               [ 6]  453 	inc	bc
+    000000CB DD 71 F8         [19]  454 	ld	-8 (ix), c
+    000000CE DD 70 F9         [19]  455 	ld	-7 (ix), b
+    000000D1 C3r2Br00         [10]  456 	jp	00106$
+    000000D4                        457 00104$:
+                                    458 ;./main.c:45: else                       high = mid - 1;
+    000000D4 0B               [ 6]  459 	dec	bc
+    000000D5 DD 71 FA         [19]  460 	ld	-6 (ix), c
+    000000D8 DD 70 FB         [19]  461 	ld	-5 (ix), b
+    000000DB C3r2Br00         [10]  462 	jp	00106$
+    000000DE                        463 00108$:
+                                    464 ;./main.c:47: return 0xFFFF; // Not found
+    000000DE 11 FF FF         [10]  465 	ld	de, #0xffff
+    000000E1                        466 00109$:
+                                    467 ;./main.c:48: }
+    000000E1 DD F9            [10]  468 	ld	sp, ix
+    000000E3 DD E1            [14]  469 	pop	ix
+    000000E5 C9               [10]  470 	ret
+                         0000F380   471 _g_RDPRIM	=	0xf380
+                         0000F385   472 _g_WRPRIM	=	0xf385
+                         0000F38C   473 _g_CLPRIM	=	0xf38c
+                         0000F39A   474 _g_USRTAB	=	0xf39a
+                         0000F3DE   475 _g_CNSDFG	=	0xf3de
+                         0000F3DF   476 _g_RG0SAV	=	0xf3df
+                         0000F3E0   477 _g_RG1SAV	=	0xf3e0
+                         0000F3E1   478 _g_RG2SAV	=	0xf3e1
+                         0000F3E2   479 _g_RG3SAV	=	0xf3e2
+                         0000F3E3   480 _g_RG4SAV	=	0xf3e3
+                         0000F3E4   481 _g_RG5SAV	=	0xf3e4
+                         0000F3E5   482 _g_RG6SAV	=	0xf3e5
+                         0000F3E6   483 _g_RG7SAV	=	0xf3e6
+                         0000F3E7   484 _g_STATFL	=	0xf3e7
+                         0000F3E8   485 _g_TRGFLG	=	0xf3e8
+                         0000F3EC   486 _g_MAXUPD	=	0xf3ec
+                         0000F3EF   487 _g_MINUPD	=	0xf3ef
+                         0000F3F3   488 _g_QUEUES	=	0xf3f3
+                         0000F3F5   489 _g_FRCNEW	=	0xf3f5
+                         0000F3F6   490 _g_SCNCNT	=	0xf3f6
+                         0000F3F7   491 _g_REPCNT	=	0xf3f7
+                         0000F3F8   492 _g_PUTPNT	=	0xf3f8
+                         0000F3FA   493 _g_GETPNT	=	0xf3fa
+                         0000F3FC   494 _g_CS120	=	0xf3fc
+                         0000F401   495 _g_CS240	=	0xf401
+                         0000F406   496 _g_LOW	=	0xf406
+                         0000F408   497 _g_HIGH	=	0xf408
+                         0000F40A   498 _g_HEADER	=	0xf40a
+                         0000F40B   499 _g_ASPCT1	=	0xf40b
+                         0000F40D   500 _g_ASPCT2	=	0xf40d
+                         0000F959   501 _g_QUETAB	=	0xf959
+                         0000F971   502 _g_QUEBAK	=	0xf971
+                         0000F975   503 _g_VOICAQ	=	0xf975
+                         0000F9F5   504 _g_VOICBQ	=	0xf9f5
+                         0000FA75   505 _g_VOICCQ	=	0xfa75
+                         0000FAF5   506 _g_RS2IQ	=	0xfaf5
+                         0000FAF5   507 _g_DPPAGE	=	0xfaf5
+                         0000FAF6   508 _g_ACPAGE	=	0xfaf6
+                         0000FAF7   509 _g_AVCSAV	=	0xfaf7
+                         0000FAF8   510 _g_EXBRSA	=	0xfaf8
+                         0000FAF9   511 _g_CHRCNT	=	0xfaf9
+                         0000FAFA   512 _g_ROMA	=	0xfafa
+                         0000FAFC   513 _g_MODE	=	0xfafc
+                         0000FAFD   514 _g_NORUSE	=	0xfafd
+                         0000FAFE   515 _g_XSAVE	=	0xfafe
+                         0000FB00   516 _g_YSAVE	=	0xfb00
+                         0000FB03   517 _g_RSTMP	=	0xfb03
+                         0000FB03   518 _g_TOCNT	=	0xfb03
+                         0000FB04   519 _g_RSFCB	=	0xfb04
+                         0000FB06   520 _g_RSIQLN	=	0xfb06
+                         0000FB07   521 _g_MEXBIh	=	0xfb07
+                         0000FB0C   522 _g_OLDSTT	=	0xfb0c
+                         0000FB0C   523 _g_OLDINT	=	0xfb0c
+                         0000FB16   524 _g_DEVNUM	=	0xfb16
+                         0000FB17   525 _g_DATCNT	=	0xfb17
+                         0000FB1A   526 _g_ERRORS	=	0xfb1a
+                         0000FB1B   527 _g_FLAGS	=	0xfb1b
+                         0000FB1C   528 _g_ESTBLS	=	0xfb1c
+                         0000FB1D   529 _g_COMMSK	=	0xfb1d
+                         0000FB1E   530 _g_LSTCOM	=	0xfb1e
+                         0000FB1F   531 _g_LSTMOD	=	0xfb1f
+                         0000FB35   532 _g_PRSCNT	=	0xfb35
+                         0000FB36   533 _g_SAVSP	=	0xfb36
+                         0000FB38   534 _g_VOICEN	=	0xfb38
+                         0000FB39   535 _g_SAVVOL	=	0xfb39
+                         0000FB3B   536 _g_MCLLEN	=	0xfb3b
+                         0000FB3C   537 _g_MCLPTR	=	0xfb3c
+                         0000FB3E   538 _g_QUEUEN	=	0xfb3e
+                         0000FB3F   539 _g_MUSICF	=	0xfb3f
+                         0000FB40   540 _g_PLYCNT	=	0xfb40
+                         0000FB41   541 _g_VCBA	=	0xfb41
+                         0000FB66   542 _g_VCBB	=	0xfb66
+                         0000FB8B   543 _g_VCBC	=	0xfb8b
+                         0000FBB0   544 _g_ENSTOP	=	0xfbb0
+                         0000FBB1   545 _g_BASROM	=	0xfbb1
+                         0000FBB2   546 _g_LINTTB	=	0xfbb2
+                         0000FBCA   547 _g_FSTPOS	=	0xfbca
+                         0000FBCC   548 _g_CODSAV	=	0xfbcc
+                         0000FBCD   549 _g_FNKSWI	=	0xfbcd
+                         0000FBCE   550 _g_FNKFLG	=	0xfbce
+                         0000FBD8   551 _g_ONGSBF	=	0xfbd8
+                         0000FBD9   552 _g_CLIKFL	=	0xfbd9
+                         0000FBDA   553 _g_OLDKEY	=	0xfbda
+                         0000FBE5   554 _g_NEWKEY	=	0xfbe5
+                         0000FBF0   555 _g_KEYBUF	=	0xfbf0
+                         0000FC18   556 _g_LINWRK	=	0xfc18
+                         0000FC40   557 _g_PATWRK	=	0xfc40
+                         0000FC48   558 _g_BOTTOM	=	0xfc48
+                         0000FC4A   559 _g_HIMEM	=	0xfc4a
+                         0000FC4C   560 _g_TRPTBL	=	0xfc4c
+                         0000FC9A   561 _g_RTYCNT	=	0xfc9a
+                         0000FC9B   562 _g_INTFLG	=	0xfc9b
+                         0000FC9C   563 _g_PADY	=	0xfc9c
+                         0000FC9D   564 _g_PADX	=	0xfc9d
+                         0000FC9E   565 _g_JIFFY	=	0xfc9e
+                         0000FCA0   566 _g_INTVAL	=	0xfca0
+                         0000FCA2   567 _g_INTCNT	=	0xfca2
+                         0000FCA4   568 _g_LOWLIM	=	0xfca4
+                         0000FCA5   569 _g_WINWID	=	0xfca5
+                         0000FCA6   570 _g_GRPHED	=	0xfca6
+                         0000FCA7   571 _g_ESCCNT	=	0xfca7
+                         0000FCA8   572 _g_INSFLG	=	0xfca8
+                         0000FCA9   573 _g_CSRSW	=	0xfca9
+                         0000FCAA   574 _g_CSTYLE	=	0xfcaa
+                         0000FCAB   575 _g_CAPST	=	0xfcab
+                         0000FCAC   576 _g_KANAST	=	0xfcac
+                         0000FCAD   577 _g_KANAMD	=	0xfcad
+                         0000FCAE   578 _g_FLBMEM	=	0xfcae
+                         0000FCAF   579 _g_SCRMOD	=	0xfcaf
+                         0000FCB0   580 _g_OLDSCR	=	0xfcb0
+                         0000FCB1   581 _g_CASPRV	=	0xfcb1
+                         0000FCB2   582 _g_BRDATR	=	0xfcb2
+                         0000FCB3   583 _g_GXPOS	=	0xfcb3
+                         0000FCB5   584 _g_GYPOS	=	0xfcb5
+                         0000FCBB   585 _g_DRWFLG	=	0xfcbb
+                         0000FCBC   586 _g_DRWSCL	=	0xfcbc
+                         0000FCBD   587 _g_DRWANG	=	0xfcbd
+                         0000FCC1   588 _g_MNROM	=	0xfcc1
+                         0000FCC1   589 _g_EXPTBL	=	0xfcc1
+                         0000FCC5   590 _g_SLTTBL	=	0xfcc5
+                         0000FCC9   591 _g_SLTATR	=	0xfcc9
+                         0000FD09   592 _g_SLTWRK	=	0xfd09
+                         0000FD89   593 _g_PROCNM	=	0xfd89
+                         0000FFE7   594 _g_RG08SAV	=	0xffe7
+                         0000FFE8   595 _g_RG09SAV	=	0xffe8
+                         0000FFE9   596 _g_RG10SAV	=	0xffe9
+                         0000FFEA   597 _g_RG11SAV	=	0xffea
+                         0000FFEB   598 _g_RG12SAV	=	0xffeb
+                         0000FFEC   599 _g_RG13SAV	=	0xffec
+                         0000FFED   600 _g_RG14SAV	=	0xffed
+                         0000FFEE   601 _g_RG15SAV	=	0xffee
+                         0000FFEF   602 _g_RG16SAV	=	0xffef
+                         0000FFF0   603 _g_RG17SAV	=	0xfff0
+                         0000FFF1   604 _g_RG18SAV	=	0xfff1
+                         0000FFF2   605 _g_RG19SAV	=	0xfff2
+                         0000FFF3   606 _g_RG20SAV	=	0xfff3
+                         0000FFF4   607 _g_RG21SAV	=	0xfff4
+                         0000FFF5   608 _g_RG22SAV	=	0xfff5
+                         0000FFF6   609 _g_RG23SAV	=	0xfff6
+                         0000FFF7   610 _g_MINROM	=	0xfff7
+                         0000FFF8   611 _g_SVFFF8	=	0xfff8
+                         0000FFFA   612 _g_RG25SAV	=	0xfffa
+                         0000FFFB   613 _g_RG26SAV	=	0xfffb
+                         0000FFFC   614 _g_RG27SAV	=	0xfffc
+                         0000FFFD   615 _g_SVFFFD	=	0xfffd
+                         00000004   616 _g_CGTABL	=	0x0004
+                         00000006   617 _g_VDP_DR	=	0x0006
+                         00000007   618 _g_VDP_DW	=	0x0007
+                         0000002B   619 _g_BASRVN	=	0x002b
+                         0000002B   620 _g_ROMVersion	=	0x002b
+                         0000002D   621 _g_MSXVER	=	0x002d
+                         0000002E   622 _g_MSXMID	=	0x002e
+                         00000034   623 _g_CHAR_16	=	0x0034
+                         00000000   624 _g_SUBRID	=	0x0000
+                         00000002   625 _g_STRSRC	=	0x0002
+                         0000F30F   626 _g_KANJTABLE	=	0xf30f
+                         0000F323   627 _g_DISKVE	=	0xf323
+                         0000F325   628 _g_BREAKV	=	0xf325
+                         0000F341   629 _g_RAMAD0	=	0xf341
+                         0000F342   630 _g_RAMAD1	=	0xf342
+                         0000F343   631 _g_RAMAD2	=	0xf343
+                         0000F344   632 _g_RAMAD3	=	0xf344
+                         0000F348   633 _g_MASTER	=	0xf348
+                         0000F37D   634 _g_BDOS	=	0xf37d
+    000000E6                        635 _Alphabet:
+    000000E6 20 41 42 43 44 45 46   636 	.ascii " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?'"
+             47 48 49 4A 4B 4C 4D
+             4E 4F 50 51 52 53 54
+             55 56 57 58 59 5A 30
+             31 32 33 34 35 36 37
+             38 39 2E 2C 21 3F 27
+    00000110 22                     637 	.db 0x22
+    00000111 28 29 2D 2B 2F 3B 3A   638 	.ascii "()-+/;:="
+             3D
+    00000119 00                     639 	.db 0x00
+    0000011A 00                     640 	.db 0x00
+    0000011B 00                     641 	.db 0x00
+    0000011C 00                     642 	.db 0x00
+    0000011D 00                     643 	.db 0x00
+    0000011E 00                     644 	.db 0x00
+    0000011F 00                     645 	.db 0x00
+    00000120 00                     646 	.db 0x00
+    00000121 00                     647 	.db 0x00
+    00000122 00                     648 	.db 0x00
+    00000123 00                     649 	.db 0x00
+    00000124 00                     650 	.db 0x00
+    00000125 00                     651 	.db 0x00
+                                    652 ;./main.c:53: u8 WeightedPick(u8* block) {
+                                    653 ;	---------------------------------
+                                    654 ; Function WeightedPick
+                                    655 ; ---------------------------------
+    00000126                        656 _WeightedPick::
+    00000126 DD E5            [15]  657 	push	ix
+    00000128 DD 21 00 00      [14]  658 	ld	ix,#0
+    0000012C DD 39            [15]  659 	add	ix,sp
+    0000012E F5               [11]  660 	push	af
+    0000012F F5               [11]  661 	push	af
+    00000130 DD 75 FD         [19]  662 	ld	-3 (ix), l
+    00000133 DD 74 FE         [19]  663 	ld	-2 (ix), h
+                                    664 ;./main.c:54: u16 total_weight = 0;
+    00000136 11 00 00         [10]  665 	ld	de, #0x0000
+                                    666 ;./main.c:55: for (u8 i = 4; i < 8; i++) total_weight += block[i];
+    00000139 0E 04            [ 7]  667 	ld	c, #0x04
+    0000013B                        668 00108$:
+    0000013B 79               [ 4]  669 	ld	a, c
+    0000013C D6 08            [ 7]  670 	sub	a, #0x08
+    0000013E 30 12            [12]  671 	jr	NC, 00101$
+    00000140 DD 6E FD         [19]  672 	ld	l, -3 (ix)
+    00000143 DD 66 FE         [19]  673 	ld	h, -2 (ix)
+    00000146 06 00            [ 7]  674 	ld	b, #0x00
+    00000148 09               [11]  675 	add	hl, bc
+    00000149 6E               [ 7]  676 	ld	l, (hl)
+                                    677 ;	spillPairReg hl
+    0000014A 26 00            [ 7]  678 	ld	h, #0x00
+                                    679 ;	spillPairReg hl
+                                    680 ;	spillPairReg hl
+    0000014C 19               [11]  681 	add	hl, de
+    0000014D EB               [ 4]  682 	ex	de, hl
+    0000014E 0C               [ 4]  683 	inc	c
+    0000014F C3r3Br01         [10]  684 	jp	00108$
+    00000152                        685 00101$:
+                                    686 ;./main.c:57: if (total_weight == 0) return 0; // Space fallback
+    00000152 7A               [ 4]  687 	ld	a, d
+    00000153 B3               [ 4]  688 	or	a,e
+    00000154 28 5C            [12]  689 	jr	Z, 00113$
+                                    690 ;./main.c:59: u16 roll = Math_GetRandom16() % total_weight;
+    00000156 D5               [11]  691 	push	de
+    00000157 CDr00r00         [17]  692 	call	_Math_GetRandom16
+    0000015A D1               [10]  693 	pop	de
+    0000015B CDr00r00         [17]  694 	call	__moduint
+                                    695 ;./main.c:60: u16 acc = 0;
+    0000015E 21 00 00         [10]  696 	ld	hl, #0x0000
+                                    697 ;./main.c:62: for (u8 i = 0; i < 4; i++) {
+    00000161 DD 36 FC 00      [19]  698 	ld	-4 (ix), #0x00
+    00000165 DD 36 FF 00      [19]  699 	ld	-1 (ix), #0x00
+    00000169                        700 00111$:
+    00000169 DD 7E FF         [19]  701 	ld	a, -1 (ix)
+    0000016C D6 04            [ 7]  702 	sub	a, #0x04
+    0000016E 30 3B            [12]  703 	jr	NC, 00106$
+                                    704 ;./main.c:63: acc += block[i + 4];
+    00000170 DD 4E FF         [19]  705 	ld	c, -1 (ix)
+    00000173 06 00            [ 7]  706 	ld	b, #0x00
+    00000175 03               [ 6]  707 	inc	bc
+    00000176 03               [ 6]  708 	inc	bc
+    00000177 03               [ 6]  709 	inc	bc
+    00000178 03               [ 6]  710 	inc	bc
+    00000179 79               [ 4]  711 	ld	a, c
+    0000017A DD 86 FD         [19]  712 	add	a, -3 (ix)
+    0000017D 4F               [ 4]  713 	ld	c, a
+    0000017E 78               [ 4]  714 	ld	a, b
+    0000017F DD 8E FE         [19]  715 	adc	a, -2 (ix)
+    00000182 47               [ 4]  716 	ld	b, a
+    00000183 0A               [ 7]  717 	ld	a, (bc)
+    00000184 4F               [ 4]  718 	ld	c, a
+    00000185 06 00            [ 7]  719 	ld	b, #0x00
+    00000187 09               [11]  720 	add	hl, bc
+                                    721 ;./main.c:64: if (roll < acc) return block[i];
+    00000188 7B               [ 4]  722 	ld	a, e
+    00000189 95               [ 4]  723 	sub	a, l
+    0000018A 7A               [ 4]  724 	ld	a, d
+    0000018B 9C               [ 4]  725 	sbc	a, h
+    0000018C 30 11            [12]  726 	jr	NC, 00112$
+    0000018E DD 7E FD         [19]  727 	ld	a, -3 (ix)
+    00000191 DD 86 FC         [19]  728 	add	a, -4 (ix)
+    00000194 4F               [ 4]  729 	ld	c, a
+    00000195 DD 7E FE         [19]  730 	ld	a, -2 (ix)
+    00000198 CE 00            [ 7]  731 	adc	a, #0x00
+    0000019A 47               [ 4]  732 	ld	b, a
+    0000019B 0A               [ 7]  733 	ld	a, (bc)
+    0000019C C3rB2r01         [10]  734 	jp	00113$
+    0000019F                        735 00112$:
+                                    736 ;./main.c:62: for (u8 i = 0; i < 4; i++) {
+    0000019F DD 34 FF         [23]  737 	inc	-1 (ix)
+    000001A2 DD 7E FF         [19]  738 	ld	a, -1 (ix)
+    000001A5 DD 77 FC         [19]  739 	ld	-4 (ix), a
+    000001A8 C3r69r01         [10]  740 	jp	00111$
+    000001AB                        741 00106$:
+                                    742 ;./main.c:66: return block[0];
+    000001AB DD 6E FD         [19]  743 	ld	l, -3 (ix)
+    000001AE DD 66 FE         [19]  744 	ld	h, -2 (ix)
+    000001B1 7E               [ 7]  745 	ld	a, (hl)
+    000001B2                        746 00113$:
+                                    747 ;./main.c:67: }
+    000001B2 DD F9            [10]  748 	ld	sp, ix
+    000001B4 DD E1            [14]  749 	pop	ix
+    000001B6 C9               [10]  750 	ret
+                                    751 ;./main.c:72: void UpdateKey(u8 char_code) {
+                                    752 ;	---------------------------------
+                                    753 ; Function UpdateKey
+                                    754 ; ---------------------------------
+    000001B7                        755 _UpdateKey::
+    000001B7 4F               [ 4]  756 	ld	c, a
+                                    757 ;./main.c:73: g_CurrentKey = ((g_CurrentKey << 6) & KEY_MASK) | (char_code & 0x3F);
+    000001B8 2Ar00r00         [16]  758 	ld	hl, (_g_CurrentKey)
+    000001BB ED 5Br02r00      [20]  759 	ld	de, (_g_CurrentKey + 2)
+    000001BF 06 06            [ 7]  760 	ld	b, #0x06
+    000001C1                        761 00103$:
+    000001C1 29               [11]  762 	add	hl, hl
+    000001C2 CB 13            [ 8]  763 	rl	e
+    000001C4 CB 12            [ 8]  764 	rl	d
+    000001C6 10 F9            [13]  765 	djnz	00103$
+    000001C8 16 00            [ 7]  766 	ld	d, #0x00
+    000001CA 79               [ 4]  767 	ld	a, c
+    000001CB E6 3F            [ 7]  768 	and	a, #0x3f
+    000001CD 4F               [ 4]  769 	ld	c, a
+    000001CE 06 00            [ 7]  770 	ld	b, #0x00
+    000001D0 79               [ 4]  771 	ld	a, c
+    000001D1 F5               [11]  772 	push	af
+    000001D2 78               [ 4]  773 	ld	a, b
+    000001D3 FD E5            [15]  774 	push	iy
+    000001D5 E3               [19]  775 	ex	(sp), hl
+    000001D6 67               [ 4]  776 	ld	h, a
+                                    777 ;	spillPairReg hl
+                                    778 ;	spillPairReg hl
+    000001D7 E3               [19]  779 	ex	(sp), hl
+    000001D8 FD E1            [14]  780 	pop	iy
+    000001DA 07               [ 4]  781 	rlca
+    000001DB 9F               [ 4]  782 	sbc	a, a
+    000001DC 4F               [ 4]  783 	ld	c, a
+    000001DD 47               [ 4]  784 	ld	b, a
+    000001DE F1               [10]  785 	pop	af
+    000001DF B5               [ 4]  786 	or	a, l
+    000001E0 32r00r00         [13]  787 	ld	(_g_CurrentKey+0), a
+    000001E3 FD E5            [15]  788 	push	iy
+    000001E5 E3               [19]  789 	ex	(sp), hl
+    000001E6 7C               [ 4]  790 	ld	a, h
+    000001E7 E3               [19]  791 	ex	(sp), hl
+    000001E8 FD E1            [14]  792 	pop	iy
+    000001EA B4               [ 4]  793 	or	a, h
+    000001EB 32r01r00         [13]  794 	ld	(_g_CurrentKey+1), a
+    000001EE 79               [ 4]  795 	ld	a, c
+    000001EF B3               [ 4]  796 	or	a, e
+    000001F0 32r02r00         [13]  797 	ld	(_g_CurrentKey+2), a
+    000001F3 78               [ 4]  798 	ld	a, b
+    000001F4 B2               [ 4]  799 	or	a, d
+    000001F5 32r03r00         [13]  800 	ld	(_g_CurrentKey+3), a
+                                    801 ;./main.c:74: }
+    000001F8 C9               [10]  802 	ret
+                                    803 ;./main.c:78: void main() {
+                                    804 ;	---------------------------------
+                                    805 ; Function main
+                                    806 ; ---------------------------------
+    000001F9                        807 _main::
+    000001F9 DD E5            [15]  808 	push	ix
+    000001FB DD 21 00 00      [14]  809 	ld	ix,#0
+    000001FF DD 39            [15]  810 	add	ix,sp
+    00000201 21 FB FF         [10]  811 	ld	hl, #-5
+    00000204 39               [11]  812 	add	hl, sp
+    00000205 F9               [ 6]  813 	ld	sp, hl
+                                    814 ;./main.c:80: VDP_SetMode(VDP_MODE_TEXT2); // 80 column mode
+    00000206 3E 04            [ 7]  815 	ld	a, #0x04
+    00000208 CDr00r00         [17]  816 	call	_VDP_SetMode
+                                    817 ;./main.c:81: VDP_ClearVRAM();
+    0000020B CDr00r00         [17]  818 	call	_VDP_ClearVRAM
+                                    819 ;./main.c:82: Print_SetColor(15, 1); // White text (15) on dark blue background (1)
+    0000020E 2E 01            [ 7]  820 	ld	l, #0x01
+                                    821 ;	spillPairReg hl
+                                    822 ;	spillPairReg hl
+    00000210 3E 0F            [ 7]  823 	ld	a, #0x0f
+    00000212 CDr00r00         [17]  824 	call	_Print_SetColor
+                                    825 ;./main.c:84: Print_DrawText("MSXai V1.0\nINITIALIZING BRAIN...\n");
+    00000215 21rB2r02         [10]  826 	ld	hl, #___str_1
+    00000218 CDr00r00         [17]  827 	call	_Print_DrawText
+                                    828 ;./main.c:87: Pletter_UnpackToVRAM(brain_index_comp, ADDR_INDEX);
+    0000021B 11 00 10         [10]  829 	ld	de, #0x1000
+    0000021E 21r00r00         [10]  830 	ld	hl, #_brain_index_comp
+    00000221 CDr00r00         [17]  831 	call	_Pletter_UnpackToVRAM
+                                    832 ;./main.c:88: Pletter_UnpackToVRAM(brain_data_comp, ADDR_DATA);
+    00000224 11 00 50         [10]  833 	ld	de, #0x5000
+    00000227 21r00r00         [10]  834 	ld	hl, #_brain_data_comp
+    0000022A CDr00r00         [17]  835 	call	_Pletter_UnpackToVRAM
+                                    836 ;./main.c:90: Print_DrawText("READY.\n\nPROMPT: ");
+    0000022D 21rD4r02         [10]  837 	ld	hl, #___str_2
+    00000230 CDr00r00         [17]  838 	call	_Print_DrawText
+                                    839 ;./main.c:92: while(1) {
+    00000233                        840 00106$:
+                                    841 ;./main.c:107: u16 state_idx = FindStateIndex(g_CurrentKey);
+    00000233 ED 5Br00r00      [20]  842 	ld	de, (_g_CurrentKey)
+    00000237 2Ar02r00         [16]  843 	ld	hl, (_g_CurrentKey + 2)
+    0000023A CDr00r00         [17]  844 	call	_FindStateIndex
+                                    845 ;./main.c:109: if (state_idx != 0xFFFF) {
+    0000023D 33               [ 6]  846 	inc	sp
+    0000023E 33               [ 6]  847 	inc	sp
+    0000023F D5               [11]  848 	push	de
+    00000240 DD 7E FB         [19]  849 	ld	a, -5 (ix)
+    00000243 DD A6 FC         [19]  850 	and	a, -4 (ix)
+    00000246 3C               [ 4]  851 	inc	a
+    00000247 28 65            [12]  852 	jr	Z, 00103$
+                                    853 ;./main.c:111: VDP_ReadVRAM((u16)ADDR_DATA + (state_idx * 8), 0, block, 8);
+    00000249 E1               [10]  854 	pop	hl
+    0000024A E5               [11]  855 	push	hl
+    0000024B 29               [11]  856 	add	hl, hl
+    0000024C 29               [11]  857 	add	hl, hl
+    0000024D 29               [11]  858 	add	hl, hl
+    0000024E 01 00 50         [10]  859 	ld	bc, #0x5000
+    00000251 09               [11]  860 	add	hl, bc
+    00000252 11 08 00         [10]  861 	ld	de, #0x0008
+    00000255 D5               [11]  862 	push	de
+    00000256 11r00r00         [10]  863 	ld	de, #_main_block_196608_909
+    00000259 D5               [11]  864 	push	de
+    0000025A AF               [ 4]  865 	xor	a, a
+    0000025B F5               [11]  866 	push	af
+    0000025C 33               [ 6]  867 	inc	sp
+    0000025D CDr00r00         [17]  868 	call	_VDP_ReadVRAM_128K
+                                    869 ;./main.c:113: u8 next_char_code = WeightedPick(block);
+    00000260 21r00r00         [10]  870 	ld	hl, #_main_block_196608_909
+    00000263 CDr26r01         [17]  871 	call	_WeightedPick
+    00000266 DD 77 FF         [19]  872 	ld	-1 (ix), a
+                                    873 ;./main.c:116: for(volatile u16 d=0; d<2000; d++); 
+    00000269 AF               [ 4]  874 	xor	a, a
+    0000026A DD 77 FD         [19]  875 	ld	-3 (ix), a
+    0000026D DD 77 FE         [19]  876 	ld	-2 (ix), a
+    00000270                        877 00110$:
+    00000270 DD 7E FD         [19]  878 	ld	a, -3 (ix)
+    00000273 DD 46 FE         [19]  879 	ld	b, -2 (ix)
+    00000276 D6 D0            [ 7]  880 	sub	a, #0xd0
+    00000278 78               [ 4]  881 	ld	a, b
+    00000279 DE 07            [ 7]  882 	sbc	a, #0x07
+    0000027B 30 10            [12]  883 	jr	NC, 00101$
+    0000027D DD 4E FD         [19]  884 	ld	c, -3 (ix)
+    00000280 DD 46 FE         [19]  885 	ld	b, -2 (ix)
+    00000283 03               [ 6]  886 	inc	bc
+    00000284 DD 71 FD         [19]  887 	ld	-3 (ix), c
+    00000287 DD 70 FE         [19]  888 	ld	-2 (ix), b
+    0000028A C3r70r02         [10]  889 	jp	00110$
+    0000028D                        890 00101$:
+                                    891 ;./main.c:119: c8 out_char[2] = { Alphabet[next_char_code], 0 };
+    0000028D 01rE6r00         [10]  892 	ld	bc, #_Alphabet+0
+    00000290 DD 6E FF         [19]  893 	ld	l, -1 (ix)
+    00000293 26 00            [ 7]  894 	ld	h, #0x00
+    00000295 09               [11]  895 	add	hl, bc
+    00000296 7E               [ 7]  896 	ld	a, (hl)
+    00000297 DD 77 FD         [19]  897 	ld	-3 (ix), a
+    0000029A DD 36 FE 00      [19]  898 	ld	-2 (ix), #0x00
+                                    899 ;./main.c:120: Print_DrawText(out_char);
+    0000029E 21 02 00         [10]  900 	ld	hl, #2
+    000002A1 39               [11]  901 	add	hl, sp
+    000002A2 CDr00r00         [17]  902 	call	_Print_DrawText
+                                    903 ;./main.c:121: UpdateKey(next_char_code);
+    000002A5 DD 7E FF         [19]  904 	ld	a, -1 (ix)
+    000002A8 CDrB7r01         [17]  905 	call	_UpdateKey
+    000002AB C3r33r02         [10]  906 	jp	00106$
+    000002AE                        907 00103$:
+                                    908 ;C:/MSX/MSXgl-1.4.1/engine/src/system.h:145: inline void Halt() { __asm__("halt"); }
+    000002AE 76               [ 4]  909 	halt
+                                    910 ;./main.c:124: Halt();
+                                    911 ;./main.c:127: }
+    000002AF C3r33r02         [10]  912 	jp	00106$
+    000002B2                        913 ___str_1:
+    000002B2 4D 53 58 61 69 20 56   914 	.ascii "MSXai V1.0"
+             31 2E 30
+    000002BC 0A                     915 	.db 0x0a
+    000002BD 49 4E 49 54 49 41 4C   916 	.ascii "INITIALIZING BRAIN..."
+             49 5A 49 4E 47 20 42
+             52 41 49 4E 2E 2E 2E
+    000002D2 0A                     917 	.db 0x0a
+    000002D3 00                     918 	.db 0x00
+    000002D4                        919 ___str_2:
+    000002D4 52 45 41 44 59 2E      920 	.ascii "READY."
+    000002DA 0A                     921 	.db 0x0a
+    000002DB 0A                     922 	.db 0x0a
+    000002DC 50 52 4F 4D 50 54 3A   923 	.ascii "PROMPT: "
+             20
+    000002E4 00                     924 	.db 0x00
+                                    925 	.area _CODE
+                                    926 	.area _INITIALIZER
+    00000000                        927 __xinit__g_CurrentKey:
+    00000000 00 00 00 00            928 	.byte #0x00, #0x00, #0x00, #0x00	; 0
+                                    929 	.area _CABS (ABS)
