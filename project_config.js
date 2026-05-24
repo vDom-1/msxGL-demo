@@ -13,7 +13,7 @@ LibModules = ["system", "bios", "vdp", "print", "input", "memory"];
 Machine = "2";
 
 // Target program format
-Target = "ROM_32K";
+Target = "ROM_64K";
 
 // Add code to check MSX version at program startup
 CheckVersion = true;
