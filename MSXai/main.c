@@ -28,14 +28,16 @@ u32 g_CurrentKey = 0;
 u16 FindStateIndex(u32 target_key) {
     i16 low = 0;
     i16 high = STATE_COUNT - 1;
-    u32 mid_key;
+    u8 key_bytes[3];
 
     while (low <= high) {
         i16 mid = low + (high - low) / 2;
-        mid_key = 0; 
+        u32 mid_key = 0;
 
         // Read 3 bytes from the sorted VRAM index
-        VDP_ReadVRAM(ADDR_INDEX + (mid * 3), (u8*)&mid_key, 3);
+        // VDP_ReadVRAM takes 4 params in 128K mode: (srcLow, srcHigh, dest, count)
+        VDP_ReadVRAM((u16)ADDR_INDEX + (mid * 3), 0, key_bytes, 3);
+        mid_key = (key_bytes[0] << 16) | (key_bytes[1] << 8) | key_bytes[2];
         mid_key &= KEY_MASK;
 
         if (mid_key == target_key) return (u16)mid;
@@ -77,7 +79,7 @@ void main() {
     // 1. Initialize Hardware
     VDP_SetMode(VDP_MODE_TEXT2); // 80 column mode
     VDP_ClearVRAM();
-    Print_SetColor(0xF4); // White text, dark blue background
+    Print_SetColor(15, 1); // White text (15) on dark blue background (1)
     
     Print_DrawText("MSXai V1.0\nINITIALIZING BRAIN...\n");
 
@@ -88,35 +90,37 @@ void main() {
     Print_DrawText("READY.\n\nPROMPT: ");
 
     while(1) {
-        // Check for user input to seed the AI
-        u8 key = Keyboard_ReadKey();
-        if (key != 0) {
-            // Find char in our alphabet
-            for (u8 i = 0; i < 64; i++) {
-                if (Alphabet[i] == key) {
-                    Print_Char(key);
-                    UpdateKey(i);
-                    break;
-                }
-            }
-        }
+        // Check for user input to seed the AI (placeholder - would need input module)
+        // u8 key = Input_GetKey();
+        // if (key != 0) {
+        //     // Find char in our alphabet
+        //     for (u8 i = 0; i < 64; i++) {
+        //         if (Alphabet[i] == key) {
+        //             Print_DrawText((const c8*)&key);
+        //             UpdateKey(i);
+        //             break;
+        //         }
+        //     }
+        // }
 
         // If we have a context, start generating
         u16 state_idx = FindStateIndex(g_CurrentKey);
         
         if (state_idx != 0xFFFF) {
-            u8 block[8];
-            VDP_ReadVRAM(ADDR_DATA + (state_idx * 8), block, 8);
+            static u8 block[8];  // Use static to ensure stable memory location
+            VDP_ReadVRAM((u16)ADDR_DATA + (state_idx * 8), 0, block, 8);
             
             u8 next_char_code = WeightedPick(block);
             
             // Artificial delay for "thinking" effect
             for(volatile u16 d=0; d<2000; d++); 
 
-            Print_Char(Alphabet[next_char_code]);
+            // Print the generated character
+            c8 out_char[2] = { Alphabet[next_char_code], 0 };
+            Print_DrawText(out_char);
             UpdateKey(next_char_code);
         } else {
-            // If the AI is stuck, wait for user input
+            // If the AI is stuck, wait (or restart)
             Halt();
         }
     }
