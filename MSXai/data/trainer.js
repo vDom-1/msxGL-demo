@@ -1,4 +1,6 @@
 const fs = require('fs');
+const { execSync } = require('child_process');
+const path = require('path');
 
 // 1. 64-Character Alphabet (6 bits per character)
 const ALPHABET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?'\"()-+/;:=" + " ".repeat(11); 
@@ -60,4 +62,21 @@ function compileBigBrain(inputFile) {
     console.log(`Total VRAM required: ${((indexFile.length + brainFile.length) / 1024).toFixed(2)} KB`);
 }
 
+function compressWithPletter(binFile, pltFile) {
+    const pletterPath = 'C:\\MSX\\MSXgl-1.4.1\\tools\\compress\\Pletter\\pletter.exe';
+    
+    try {
+        console.log(`\nCompressing ${binFile} to ${pltFile} using Pletter...`);
+        execSync(`"${pletterPath}" "${binFile}" "${pltFile}"`, { stdio: 'inherit' });
+        console.log(`✓ Successfully created ${pltFile}`);
+    } catch (error) {
+        console.error(`✗ Error compressing ${binFile}:`);
+        throw error;
+    }
+}
+
 compileBigBrain('training-data.txt');
+
+// Compress the binary files to plt using Pletter
+compressWithPletter('brain_index.bin', 'brain_index.plt');
+compressWithPletter('brain_data.bin', 'brain_data.plt');

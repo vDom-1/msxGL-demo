@@ -542,19 +542,24 @@ _INITIALIZED                        0000C08B    00000011 =          17. bytes (R
 
 Files Linked                              [ module(s) ]
 
-C:\MSX\msxGL-demo\MSXai/out/crt0_rom48.rel
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/crt0_rom48.rel
                                           [ crt0 ]
-C:\MSX\msxGL-demo\MSXai/out/main.rel      [ main ]
-C:\MSX\msxGL-demo\MSXai/out/brain_data.rel
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/main.rel
+                                          [ main ]
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/brain_data.rel
                                           [  ]
 
 
 Libraries Linked                          [ object file ]
 
-C:\MSX\msxGL-demo\MSXai/out/msxgl.lib     [ vdp.rel ]
-C:\MSX\msxGL-demo\MSXai/out/msxgl.lib     [ math.rel ]
-C:\MSX\msxGL-demo\MSXai/out/msxgl.lib     [ print.rel ]
-C:\MSX\msxGL-demo\MSXai/out/msxgl.lib     [ pletter.rel ]
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/msxgl.lib
+                                          [ vdp.rel ]
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/msxgl.lib
+                                          [ math.rel ]
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/msxgl.lib
+                                          [ print.rel ]
+C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/msxgl.lib
+                                          [ pletter.rel ]
 C:\MSX\MSXgl-1.4.1\tools/sdcc/lib/z80/z80.lib
                                           [ modunsigned.rel ]
 C:\MSX\MSXgl-1.4.1\tools/sdcc/lib/z80/z80.lib

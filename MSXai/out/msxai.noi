@@ -407,4 +407,4 @@ DEF _g_VDPInitilized 0xC08F
 DEF _g_RandomSeed8 0xC090
 DEF _g_RandomSeed16 0xC092
 DEF _g_PrintInvalid 0xC094
-LOAD C:\MSX\msxGL-demo\MSXai/out/msxai.ihx
+LOAD C:\MSX\msxGL-demo.worktrees\agents-build-plt-files-with-pletter\MSXai/out/msxai.ihx
