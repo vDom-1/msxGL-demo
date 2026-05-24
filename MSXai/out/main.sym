@@ -7,19 +7,20 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 _Alphabet                                                       000000E6 GR
+  0 _Alphabet                                                       00000130 GR
   0 _FindStateIndex                                                 00000000 GR
+    _Keyboard_ReadNextChar                                          ******** GX
     _Math_GetRandom16                                               ******** GX
     _Pletter_UnpackToVRAM                                           ******** GX
     _Print_DrawText                                                 ******** GX
     _Print_SetColor                                                 ******** GX
-  0 _UpdateKey                                                      000001B7 GR
+  0 _UpdateKey                                                      00000201 GR
     _VDP_ClearVRAM                                                  ******** GX
     _VDP_ReadVRAM_128K                                              ******** GX
     _VDP_SetMode                                                    ******** GX
-  0 _WeightedPick                                                   00000126 GR
-  0 ___str_1                                                        000002B2 R
-  0 ___str_2                                                        000002D4 R
+  0 _WeightedPick                                                   00000170 GR
+  0 ___str_1                                                        00000343 R
+  0 ___str_2                                                        00000365 R
     __moduint                                                       ******** GX
   7 __xinit__g_CurrentKey                                           00000000 R
     _brain_data_comp                                                ******** GX
@@ -57,12 +58,12 @@ Symbol Table
     _g_CSRSW                                                    =   0000FCA9 G
     _g_CSRX                                                     =   0000F3DD G
     _g_CSRY                                                     =   0000F3DC G
-    _g_CSTYLE                                                   =   0000FCAA G
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                          Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _g_CSTYLE                                                   =   0000FCAA G
   2 _g_CurrentKey                                                   00000000 GR
     _g_DATCNT                                                   =   0000FB17 G
     _g_DEVNUM                                                   =   0000FB16 G
@@ -117,12 +118,12 @@ Symbol Table
     _g_LOW                                                      =   0000F406 G
     _g_LOWLIM                                                   =   0000FCA4 G
     _g_LSTCOM                                                   =   0000FB1E G
-    _g_LSTMOD                                                   =   0000FB1F G
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                          Page 3
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _g_LSTMOD                                                   =   0000FB1F G
     _g_MASTER                                                   =   0000F348 G
     _g_MAXUPD                                                   =   0000F3EC G
     _g_MCLLEN                                                   =   0000FB3B G
@@ -177,12 +178,12 @@ Symbol Table
     _g_RAMAD0                                                   =   0000F341 G
     _g_RAMAD1                                                   =   0000F342 G
     _g_RAMAD2                                                   =   0000F343 G
-    _g_RAMAD3                                                   =   0000F344 G
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                          Page 4
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _g_RAMAD3                                                   =   0000F344 G
     _g_RDPRIM                                                   =   0000F380 G
     _g_REPCNT                                                   =   0000F3F7 G
     _g_RG08SAV                                                  =   0000FFE7 G
@@ -237,12 +238,12 @@ Symbol Table
     _g_T32ATR                                                   =   0000F3C3 G
     _g_T32CGP                                                   =   0000F3C1 G
     _g_T32COL                                                   =   0000F3BF G
-    _g_T32NAM                                                   =   0000F3BD G
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                          Page 5
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _g_T32NAM                                                   =   0000F3BD G
     _g_T32PAT                                                   =   0000F3C5 G
     _g_TOCNT                                                    =   0000FB03 G
     _g_TRGFLG                                                   =   0000F3E8 G
@@ -272,16 +273,15 @@ Symbol Table
     _g_WRPRIM                                                   =   0000F385 G
     _g_XSAVE                                                    =   0000FAFE G
     _g_YSAVE                                                    =   0000FB00 G
-  0 _main                                                           000001F9 GR
-  1 _main_block_196608_909                                          00000000 R
-
+  0 _main                                                           00000243 GR
+  1 _main_block_196609_914                                          00000000 R
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                          Page 6
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      2E5   flags    0
+   0 _CODE                                      size      376   flags    0
    1 _DATA                                      size        8   flags    0
    2 _INITIALIZED                               size        4   flags    0
    3 _DABS                                      size        0   flags    8

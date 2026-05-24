@@ -294,7 +294,7 @@ _g_LOGOPR	=	0xfb02
 _g_GRPACX	=	0xfcb7
 _g_GRPACY	=	0xfcb9
 _g_SLTSL	=	0xffff
-_main_block_196608_909:
+_main_block_196609_914:
 	.ds 8
 ;--------------------------------------------------------
 ; ram data
@@ -330,7 +330,7 @@ _FindStateIndex::
 	push	ix
 	ld	ix,#0
 	add	ix,sp
-	ld	iy, #-11
+	ld	iy, #-19
 	add	iy, sp
 	ld	sp, iy
 	ld	-4 (ix), e
@@ -339,27 +339,27 @@ _FindStateIndex::
 	ld	-1 (ix), h
 ;./main.c:29: i16 low = 0;
 	xor	a, a
-	ld	-8 (ix), a
-	ld	-7 (ix), a
+	ld	-16 (ix), a
+	ld	-15 (ix), a
 ;./main.c:30: i16 high = STATE_COUNT - 1;
-	ld	-6 (ix), #0xfb
-	ld	-5 (ix), #0x13
+	ld	-14 (ix), #0xfb
+	ld	-13 (ix), #0x13
 ;./main.c:33: while (low <= high) {
 00106$:
-	ld	a, -6 (ix)
-	sub	a, -8 (ix)
-	ld	a, -5 (ix)
-	sbc	a, -7 (ix)
+	ld	a, -14 (ix)
+	sub	a, -16 (ix)
+	ld	a, -13 (ix)
+	sbc	a, -15 (ix)
 	jp	PO, 00137$
 	xor	a, #0x80
 00137$:
 	jp	M, 00108$
 ;./main.c:34: i16 mid = low + (high - low) / 2;
-	ld	a, -6 (ix)
-	sub	a, -8 (ix)
+	ld	a, -14 (ix)
+	sub	a, -16 (ix)
 	ld	e, a
-	ld	a, -5 (ix)
-	sbc	a, -7 (ix)
+	ld	a, -13 (ix)
+	sbc	a, -15 (ix)
 	ld	d, a
 	ld	c, e
 	ld	b, d
@@ -371,10 +371,10 @@ _FindStateIndex::
 00111$:
 	sra	b
 	rr	c
-	ld	l, -8 (ix)
+	ld	l, -16 (ix)
 ;	spillPairReg hl
 ;	spillPairReg hl
-	ld	h, -7 (ix)
+	ld	h, -15 (ix)
 ;	spillPairReg hl
 ;	spillPairReg hl
 	add	hl, bc
@@ -405,20 +405,57 @@ _FindStateIndex::
 	call	_VDP_ReadVRAM_128K
 	pop	iy
 	pop	bc
-;./main.c:40: mid_key = (key_bytes[0] << 16) | (key_bytes[1] << 8) | key_bytes[2];
-	ld	d, -10 (ix)
+;./main.c:40: mid_key = ((u32)key_bytes[0] << 16) | ((u32)key_bytes[1] << 8) | (u32)key_bytes[2];
+	ld	e, -19 (ix)
+	ld	d, #0x00
+	ld	hl, #0x0000
+	ex	de, hl
+	ld	de, #0x0000
+	ld	-12 (ix), e
+	ld	-11 (ix), d
+	ld	-10 (ix), l
+	ld	-9 (ix), h
+	ld	e, -18 (ix)
+	ld	d, #0x00
+	ld	hl, #0x0000
+	ld	h, l
+;	spillPairReg hl
+;	spillPairReg hl
+	ld	l, d
+;	spillPairReg hl
+;	spillPairReg hl
+	ld	d, e
 	ld	e, #0x00
-	ld	a, -9 (ix)
-	ld	l, #0x00
-;	spillPairReg hl
-;	spillPairReg hl
+	ld	a, -12 (ix)
 	or	a, e
-	ld	e, a
-	ld	a, l
+	ld	-8 (ix), a
+	ld	a, -11 (ix)
 	or	a, d
+	ld	-7 (ix), a
+	ld	a, -10 (ix)
+	or	a, l
+	ld	-6 (ix), a
+	ld	a, -9 (ix)
+	or	a, h
+	ld	-5 (ix), a
+	ld	e, -17 (ix)
+	ld	d, #0x00
+	ld	hl, #0x0000
+	ld	a, e
+	or	a, -8 (ix)
+	ld	e, a
+	ld	a, d
+	or	a, -7 (ix)
 	ld	d, a
-	rlca
-	sbc	hl, hl
+	ld	a, l
+	or	a, -6 (ix)
+	ld	l, a
+;	spillPairReg hl
+;	spillPairReg hl
+	ld	a, h
+	or	a, -5 (ix)
+;	spillPairReg hl
+;	spillPairReg hl
 ;./main.c:41: mid_key &= KEY_MASK;
 	ld	h, #0x00
 ;	spillPairReg hl
@@ -451,14 +488,14 @@ _FindStateIndex::
 	sbc	a, -1 (ix)
 	jr	NC, 00104$
 	inc	bc
-	ld	-8 (ix), c
-	ld	-7 (ix), b
+	ld	-16 (ix), c
+	ld	-15 (ix), b
 	jp	00106$
 00104$:
 ;./main.c:45: else                       high = mid - 1;
 	dec	bc
-	ld	-6 (ix), c
-	ld	-5 (ix), b
+	ld	-14 (ix), c
+	ld	-13 (ix), b
 	jp	00106$
 00108$:
 ;./main.c:47: return 0xFFFF; // Not found
@@ -754,7 +791,7 @@ _WeightedPick::
 ; ---------------------------------
 _UpdateKey::
 	ld	c, a
-;./main.c:73: g_CurrentKey = ((g_CurrentKey << 6) & KEY_MASK) | (char_code & 0x3F);
+;./main.c:73: g_CurrentKey = (((u32)g_CurrentKey << 6) & (u32)KEY_MASK) | (u32)(char_code & 0x3F);
 	ld	hl, (_g_CurrentKey)
 	ld	de, (_g_CurrentKey + 2)
 	ld	b, #0x06
@@ -808,7 +845,7 @@ _main::
 	push	ix
 	ld	ix,#0
 	add	ix,sp
-	ld	hl, #-5
+	ld	hl, #-7
 	add	hl, sp
 	ld	sp, hl
 ;./main.c:80: VDP_SetMode(VDP_MODE_TEXT2); // 80 column mode
@@ -837,20 +874,74 @@ _main::
 	ld	hl, #___str_2
 	call	_Print_DrawText
 ;./main.c:92: while(1) {
-00106$:
-;./main.c:107: u16 state_idx = FindStateIndex(g_CurrentKey);
+00115$:
+;./main.c:95: u8 key = Keyboard_ReadNextChar();
+	call	_Keyboard_ReadNextChar
+;./main.c:98: if (key != 0 && key != 255) {
+	ld	a, e
+	or	a, a
+	jr	Z, 00108$
+	ld	a, e
+	inc	a
+	jr	Z, 00108$
+;./main.c:100: if(key >= 'a' && key <= 'z') key -= 32;
+	ld	a, e
+	sub	a, #0x61
+	jr	C, 00102$
+	ld	a, #0x7a
+	sub	a, e
+	jr	C, 00102$
+	ld	a, e
+	add	a, #0xe0
+	ld	e, a
+00102$:
+;./main.c:103: for (u8 i = 0; i < 64; i++) {
+	ld	d, #0x00
+	ld	c, d
+00119$:
+	ld	a, c
+	sub	a, #0x40
+	jr	NC, 00108$
+;./main.c:104: if (Alphabet[i] == key) {
+	ld	hl, #_Alphabet
+	ld	b, #0x00
+	add	hl, bc
+	ld	a, (hl)
+	sub	a, e
+	jr	NZ, 00120$
+;./main.c:106: c8 out_user[2] = { key, 0 };
+	ld	-5 (ix), e
+	ld	-4 (ix), #0x00
+;./main.c:107: Print_DrawText(out_user);
+	push	de
+	ld	hl, #4
+	add	hl, sp
+	call	_Print_DrawText
+	pop	de
+;./main.c:110: UpdateKey(i);
+	ld	a, d
+	call	_UpdateKey
+;./main.c:111: break; 
+	jp	00108$
+00120$:
+;./main.c:103: for (u8 i = 0; i < 64; i++) {
+	inc	c
+	ld	d, c
+	jp	00119$
+00108$:
+;./main.c:117: u16 state_idx = FindStateIndex(g_CurrentKey);
 	ld	de, (_g_CurrentKey)
 	ld	hl, (_g_CurrentKey + 2)
 	call	_FindStateIndex
-;./main.c:109: if (state_idx != 0xFFFF) {
+;./main.c:119: if (state_idx != 0xFFFF) {
 	inc	sp
 	inc	sp
 	push	de
-	ld	a, -5 (ix)
-	and	a, -4 (ix)
+	ld	a, -7 (ix)
+	and	a, -6 (ix)
 	inc	a
-	jr	Z, 00103$
-;./main.c:111: VDP_ReadVRAM((u16)ADDR_DATA + (state_idx * 8), 0, block, 8);
+	jr	Z, 00112$
+;./main.c:121: VDP_ReadVRAM((u16)ADDR_DATA + (state_idx * 8), 0, block, 8);
 	pop	hl
 	push	hl
 	add	hl, hl
@@ -860,35 +951,35 @@ _main::
 	add	hl, bc
 	ld	de, #0x0008
 	push	de
-	ld	de, #_main_block_196608_909
+	ld	de, #_main_block_196609_914
 	push	de
 	xor	a, a
 	push	af
 	inc	sp
 	call	_VDP_ReadVRAM_128K
-;./main.c:113: u8 next_char_code = WeightedPick(block);
-	ld	hl, #_main_block_196608_909
+;./main.c:123: u8 next_char_code = WeightedPick(block);
+	ld	hl, #_main_block_196609_914
 	call	_WeightedPick
 	ld	-1 (ix), a
-;./main.c:116: for(volatile u16 d=0; d<2000; d++); 
+;./main.c:126: for(volatile u16 d=0; d<2000; d++); 
 	xor	a, a
 	ld	-3 (ix), a
 	ld	-2 (ix), a
-00110$:
+00122$:
 	ld	a, -3 (ix)
 	ld	b, -2 (ix)
 	sub	a, #0xd0
 	ld	a, b
 	sbc	a, #0x07
-	jr	NC, 00101$
+	jr	NC, 00110$
 	ld	c, -3 (ix)
 	ld	b, -2 (ix)
 	inc	bc
 	ld	-3 (ix), c
 	ld	-2 (ix), b
-	jp	00110$
-00101$:
-;./main.c:119: c8 out_char[2] = { Alphabet[next_char_code], 0 };
+	jp	00122$
+00110$:
+;./main.c:129: c8 out_char[2] = { Alphabet[next_char_code], 0 };
 	ld	bc, #_Alphabet+0
 	ld	l, -1 (ix)
 	ld	h, #0x00
@@ -896,20 +987,20 @@ _main::
 	ld	a, (hl)
 	ld	-3 (ix), a
 	ld	-2 (ix), #0x00
-;./main.c:120: Print_DrawText(out_char);
-	ld	hl, #2
+;./main.c:130: Print_DrawText(out_char);
+	ld	hl, #4
 	add	hl, sp
 	call	_Print_DrawText
-;./main.c:121: UpdateKey(next_char_code);
+;./main.c:131: UpdateKey(next_char_code);
 	ld	a, -1 (ix)
 	call	_UpdateKey
-	jp	00106$
-00103$:
+	jp	00115$
+00112$:
 ;C:/MSX/MSXgl-1.4.1/engine/src/system.h:145: inline void Halt() { __asm__("halt"); }
 	halt
-;./main.c:124: Halt();
-;./main.c:127: }
-	jp	00106$
+;./main.c:134: Halt();
+;./main.c:137: }
+	jp	00115$
 ___str_1:
 	.ascii "MSXai V1.0"
 	.db 0x0a

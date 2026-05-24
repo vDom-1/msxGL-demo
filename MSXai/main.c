@@ -37,7 +37,7 @@ u16 FindStateIndex(u32 target_key) {
         // Read 3 bytes from the sorted VRAM index
         // VDP_ReadVRAM takes 4 params in 128K mode: (srcLow, srcHigh, dest, count)
         VDP_ReadVRAM((u16)ADDR_INDEX + (mid * 3), 0, key_bytes, 3);
-        mid_key = (key_bytes[0] << 16) | (key_bytes[1] << 8) | key_bytes[2];
+        mid_key = ((u32)key_bytes[0] << 16) | ((u32)key_bytes[1] << 8) | (u32)key_bytes[2];
         mid_key &= KEY_MASK;
 
         if (mid_key == target_key) return (u16)mid;
@@ -70,7 +70,7 @@ u8 WeightedPick(u8* block) {
  * Slide the 24-bit window with a new 6-bit character.
  */
 void UpdateKey(u8 char_code) {
-    g_CurrentKey = ((g_CurrentKey << 6) & KEY_MASK) | (char_code & 0x3F);
+    g_CurrentKey = (((u32)g_CurrentKey << 6) & (u32)KEY_MASK) | (u32)(char_code & 0x3F);
 }
 
 // --- Main Application ---
@@ -90,18 +90,28 @@ void main() {
     Print_DrawText("READY.\n\nPROMPT: ");
 
     while(1) {
-        // Check for user input to seed the AI (placeholder - would need input module)
-        // u8 key = Input_GetKey();
-        // if (key != 0) {
-        //     // Find char in our alphabet
-        //     for (u8 i = 0; i < 64; i++) {
-        //         if (Alphabet[i] == key) {
-        //             Print_DrawText((const c8*)&key);
-        //             UpdateKey(i);
-        //             break;
-        //         }
-        //     }
-        // }
+
+        // 1. Get the last pressed key (returns ASCII or 0)
+        u8 key = Keyboard_ReadNextChar();
+
+        // 2. 0 means no key, 255 usually means a function key we should ignore
+        if (key != 0 && key != 255) {
+            // 3. Convert lowercase to uppercase (since our Brain is uppercase)
+            if(key >= 'a' && key <= 'z') key -= 32;
+
+            // 4. Check if the character exists in our 64-char Alphabet
+            for (u8 i = 0; i < 64; i++) {
+                if (Alphabet[i] == key) {
+                    // 5. Echo to screen
+                    c8 out_user[2] = { key, 0 };
+                    Print_DrawText(out_user);
+                    
+                    // 6. Seed the AI with this new character
+                    UpdateKey(i);
+                    break; 
+                }
+            }
+        }
 
         // If we have a context, start generating
         u16 state_idx = FindStateIndex(g_CurrentKey);
